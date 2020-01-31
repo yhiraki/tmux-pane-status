@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__version__ = '0.0.1'
+__version__ = '0.0.3'
 
-from .s import main
+from .s import main  # noqa

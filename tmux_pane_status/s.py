@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import re
-from configparser import ConfigParser
-from io import StringIO
+import sys
+from os import environ
 from pathlib import Path
+
+from . import git
 
 
 class LazyString:
@@ -13,6 +15,10 @@ class LazyString:
 
     def __str__(self):
         return str(self.func())
+
+
+def is_git(path: Path):
+    return git_root(path) is not None
 
 
 def git_root(path: Path):
@@ -25,15 +31,6 @@ def git_root(path: Path):
         path = path.parent
 
 
-def read_git_config(path):
-    path = Path(path)
-    with path.open() as f:
-        fp = f.readlines()
-    config = ConfigParser()
-    config.read_file(StringIO(''.join([l.lstrip() for l in fp])))
-    return config
-
-
 def main():
     from argparse import ArgumentParser
     parser = ArgumentParser()
@@ -41,15 +38,30 @@ def main():
     parser.add_argument('pid', type=int)
     args = parser.parse_args()
 
-    root = git_root(args.pwd)
-    if root:
-        config = read_git_config(root / '.git/config')
-        for section in config.sections():
-            if section.startswith('remote'):
-                url = config[section]['url'].split('@')[1]
-                m = re.match(r'(.*)[:/](.*)/(.*)', url)
-                host, user, name = m.groups()
-                print(f'{host}/{user}/{name}')
+    out = ''
+
+    if is_git(args.pwd):
+
+        for remote in git.remote():
+            url = remote[1].split('@')[1]
+            m = re.match(r'(.*)[:/](.*)/(.*)', url)
+            host, user, name = m.groups()
+            out += f'{host}/{user}/{name}'
+            break
+
+        out += ' ' + git.current_branch()
+
+        out += f" [{''.join(set(''.join([s[0] for s in git.status()])))}]"
+
+    else:
+
+        pwd = str(args.pwd.resolve())
+        home = environ.get('HOME')
+        if home:
+            pwd = re.sub(f'^{home}', '~', pwd)
+        out += f'{pwd}'
+
+    sys.stdout.write(out)
 
 
 if __name__ == '__main__':
