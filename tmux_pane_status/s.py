@@ -20,8 +20,7 @@ def git_root(path: Path):
     if not path.is_dir():
         path = path.parent
     while not path == path.parent:
-        gp = (path / '.git')
-        if gp.is_dir() and gp.exists():
+        if (path / '.git').is_dir():
             return path
         path = path.parent
 
