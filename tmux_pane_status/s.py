@@ -49,7 +49,7 @@ def main():
             out += f'{host}/{user}/{name}'
             break
 
-        out += ' ' + git.current_branch()
+        out += ' ' + git.branch_current()
 
         out += f" [{''.join(set(''.join([s[0] for s in git.status()])))}]"
 

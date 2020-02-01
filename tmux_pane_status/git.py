@@ -17,7 +17,7 @@ def remote():
         yield line.split()
 
 
-def current_branch():
+def branch_current():
     return next(git('rev-parse', '--abbrev-ref', 'HEAD'))
 
 
