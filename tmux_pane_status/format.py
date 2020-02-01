@@ -86,3 +86,9 @@ def cwd(working_dir):
     if home:
         working_dir = re.sub(f'^{home}', '~', working_dir)
     return working_dir
+
+
+def project_python(yes):
+    if yes:
+        return 'py'
+    return ''

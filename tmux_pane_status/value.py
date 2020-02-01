@@ -3,6 +3,7 @@
 
 from . import format
 from . import git
+from . import directory
 
 
 class LazyString:
@@ -19,5 +20,6 @@ def make_values(*, cwd):
         'git_repository_name': LazyString(lambda: format.git_repository_name(git.remote())),
         'git_current_branch': LazyString(lambda: format.git_current_branch(git.branch_current())),
         'git_status_icons': LazyString(lambda: format.git_status_icons(git.status())),
-        'cwd': LazyString(lambda: format.cwd(str(cwd.resolve())))
+        'cwd': LazyString(lambda: format.cwd(str(cwd))),
+        'project_python': LazyString(lambda: format.project_python(directory.is_python(cwd)))
     }

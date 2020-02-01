@@ -21,3 +21,10 @@ def git_root(path: Path):
     for p in _walk_up(path):
         if (p / '.git').is_dir():
             return p
+
+
+def is_python(path: Path):
+    for p in _walk_up(path):
+        if ((p / '__init__.py').is_file() or (p / 'setup.py').is_file()):
+            return True
+    return False

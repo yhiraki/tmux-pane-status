@@ -4,7 +4,7 @@
 import sys
 from pathlib import Path
 
-from .directory import is_git
+from . import directory
 from .value import make_values
 
 
@@ -15,20 +15,24 @@ def main():
     parser.add_argument('pid', type=int)
     args = parser.parse_args()
 
-    v = make_values(cwd=args.cwd)
+    cwd = args.cwd.resolve()
+
     out = ''
 
-    if is_git(args.cwd):
+    if directory.is_git(cwd):
         out += (
             '{git_remote_server} '
             '{git_repository_name} '
             '{git_current_branch} '
             '{git_status_icons}'
-        ).format(**v)
+        )
     else:
-        out += '{cwd}'.format(**v)
+        out += '{cwd}'
 
-    sys.stdout.write(out)
+    out += ' {project_python}'
+
+    v = make_values(cwd=cwd)
+    sys.stdout.write(out.format(**v))
 
 
 if __name__ == '__main__':
