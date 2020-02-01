@@ -7,6 +7,15 @@ from pathlib import Path
 from . import directory
 from .value import make_values
 
+PY_TMUX_PANE_FORMAT_DEFAULT = '{cwd}'
+PY_TMUX_PANE_FORMAT_GIT = (
+    '{git_remote_server} '
+    '{git_repository_name} '
+    '{git_current_branch} '
+    '{git_status_icons} '
+    '{project_python}'
+)
+
 
 def main():
     from argparse import ArgumentParser
@@ -16,20 +25,10 @@ def main():
     args = parser.parse_args()
 
     cwd = args.cwd.resolve()
-
-    out = ''
+    s = PY_TMUX_PANE_FORMAT_DEFAULT
 
     if directory.is_git(cwd):
-        out += (
-            '{git_remote_server} '
-            '{git_repository_name} '
-            '{git_current_branch} '
-            '{git_status_icons}'
-        )
-    else:
-        out += '{cwd}'
-
-    out += ' {project_python}'
+        s = PY_TMUX_PANE_FORMAT_GIT
 
     v = make_values(cwd=cwd)
 
@@ -39,7 +38,7 @@ def main():
     #     for key in v:
     #         e.submit(v[key].__str__)
 
-    sys.stdout.write(out.format(**v))
+    sys.stdout.write(s.format(**v))
 
 
 if __name__ == '__main__':
