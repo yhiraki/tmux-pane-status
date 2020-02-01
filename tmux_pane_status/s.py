@@ -1,20 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import re
 import sys
-from os import environ
 from pathlib import Path
-
-from . import git
-
-
-class LazyString:
-    def __init__(self, func):
-        self.func = func
-
-    def __str__(self):
-        return str(self.func())
+from .value import make_values
 
 
 def is_git(path: Path):
@@ -34,32 +23,17 @@ def git_root(path: Path):
 def main():
     from argparse import ArgumentParser
     parser = ArgumentParser()
-    parser.add_argument('pwd', type=Path)
+    parser.add_argument('cwd', type=Path)
     parser.add_argument('pid', type=int)
     args = parser.parse_args()
 
+    v = make_values(cwd=args.cwd)
     out = ''
 
-    if is_git(args.pwd):
-
-        for remote in git.remote():
-            url = remote[1].split('@')[1]
-            m = re.match(r'(.*)[:/](.*)/(.*)', url)
-            host, user, name = m.groups()
-            out += f'{host}/{user}/{name}'
-            break
-
-        out += ' ' + git.branch_current()
-
-        out += f" [{''.join(set(''.join([s[0] for s in git.status()])))}]"
-
+    if is_git(args.cwd):
+        out += '{git_repository_name} {git_current_branch} {git_status_icons}'.format(**v)
     else:
-
-        pwd = str(args.pwd.resolve())
-        home = environ.get('HOME')
-        if home:
-            pwd = re.sub(f'^{home}', '~', pwd)
-        out += f'{pwd}'
+        out += '{cwd}'.format(**v)
 
     sys.stdout.write(out)
 
