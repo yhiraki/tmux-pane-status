@@ -68,7 +68,10 @@ def git_status_icons(statuses):
     Returns:
         str
     """
-    return f"[{''.join(set(''.join([s[0] for s in statuses])))}]"
+    v = set(''.join([s[0] for s in statuses]))
+    if v:
+        return f"[{''.join(v)}]"
+    return ''
 
 
 def cwd(working_dir):
