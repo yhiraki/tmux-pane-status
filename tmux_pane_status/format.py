@@ -5,6 +5,25 @@ import re
 from os import environ
 
 
+def _git_parse_remote(remotes):
+    """Parse git remote
+
+    Args:
+        remotes: result of git.remote()
+    Returns:
+        server, user, name (Tuple[str]):
+    """
+    err = None
+    for remote in remotes:
+        try:
+            url = remote[1].split('@')[1]
+            m = re.match(r'(.*)[:/](.*)/(.*)', url)
+            return m.groups()
+        except Exception as e:
+            err = e
+    raise err
+
+
 def git_repository_name(remotes):
     """Git repository name
 
@@ -13,16 +32,10 @@ def git_repository_name(remotes):
     Returns:
         str
     """
-    err = None
-    for remote in remotes:
-        try:
-            url = remote[1].split('@')[1]
-            m = re.match(r'(.*)[:/](.*)/(.*)', url)
-            host, user, name = m.groups()
-            return f'{host}/{user}/{name}'
-        except Exception as e:
-            err = e
-    raise err
+    _, user, name = _git_parse_remote(remotes)
+    if name.endswith('.git'):
+        name = name[:-4]
+    return f'{user}/{name}'
 
 
 def git_current_branch(branch_name):

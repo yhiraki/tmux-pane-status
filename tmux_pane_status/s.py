@@ -31,7 +31,11 @@ def main():
     out = ''
 
     if is_git(args.cwd):
-        out += '{git_repository_name} {git_current_branch} {git_status_icons}'.format(**v)
+        out += (
+            '{git_repository_name} '
+            '{git_current_branch} '
+            '{git_status_icons}'
+        ).format(**v)
     else:
         out += '{cwd}'.format(**v)
 
