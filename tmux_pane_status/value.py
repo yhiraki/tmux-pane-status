@@ -9,9 +9,13 @@ from . import directory
 class LazyString:
     def __init__(self, func):
         self.func = func
+        self.cache = None
 
     def __str__(self):
-        return str(self.func())
+        if self.cache:
+            return self.cache
+        self.cache = str(self.func())
+        return self.cache
 
 
 def make_values(*, cwd):
