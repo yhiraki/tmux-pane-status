@@ -32,6 +32,7 @@ def main():
 
     if is_git(args.cwd):
         out += (
+            '{git_remote_server} '
             '{git_repository_name} '
             '{git_current_branch} '
             '{git_status_icons}'

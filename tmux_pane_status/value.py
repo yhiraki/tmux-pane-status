@@ -15,6 +15,7 @@ class LazyString:
 
 def make_values(*, cwd):
     return {
+        'git_remote_server': LazyString(lambda: format.git_remote_server(git.remote())),
         'git_repository_name': LazyString(lambda: format.git_repository_name(git.remote())),
         'git_current_branch': LazyString(lambda: format.git_current_branch(git.branch_current())),
         'git_status_icons': LazyString(lambda: format.git_status_icons(git.status())),

@@ -24,6 +24,17 @@ def _git_parse_remote(remotes):
     raise err
 
 
+def git_remote_server(remotes):
+    """Git remote server name
+
+    Args:
+        remotes: result of git.remote()
+    Returns:
+        str
+    """
+    return _git_parse_remote(remotes)[0]
+
+
 def git_repository_name(remotes):
     """Git repository name
 
