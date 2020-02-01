@@ -3,21 +3,9 @@
 
 import sys
 from pathlib import Path
+
+from .directory import is_git
 from .value import make_values
-
-
-def is_git(path: Path):
-    return git_root(path) is not None
-
-
-def git_root(path: Path):
-    path = Path(path).resolve()
-    if not path.is_dir():
-        path = path.parent
-    while not path == path.parent:
-        if (path / '.git').is_dir():
-            return path
-        path = path.parent
 
 
 def main():

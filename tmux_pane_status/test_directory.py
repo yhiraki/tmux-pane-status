@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from . import s
+from . import directory
 
 
 class TestStatus(unittest.TestCase):
@@ -22,9 +22,9 @@ class TestStatus(unittest.TestCase):
                         continue
                     f.touch()
                 if gitroot is None:
-                    self.assertEqual(s.git_root(pwd), gitroot, (files, pwd, gitroot))
+                    self.assertEqual(directory.git_root(pwd), gitroot, (files, pwd, gitroot))
                     return
-                self.assertEqual(s.git_root(pwd), Path(gitroot).resolve(), (files, pwd, gitroot))
+                self.assertEqual(directory.git_root(pwd), Path(gitroot).resolve(), (files, pwd, gitroot))
 
         tests = (
             (
