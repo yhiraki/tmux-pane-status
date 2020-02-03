@@ -2,9 +2,23 @@
 # -*- coding: utf-8 -*-
 
 import re
+from functools import wraps
 from os import environ
 
 
+def set_options(func):
+    @wraps(func)
+    def _wrapper(*args, options=None, **kwargs):
+        s = func(*args, **kwargs)
+        if options is None:
+            return s
+        opt = ''.join([f'#[{k}={v}]' for k, v in options.items()])
+        end = '#[none]'
+        return f'{opt}{s}{end}'
+    return _wrapper
+
+
+@set_options
 def _git_parse_remote(remotes):
     """Parse git remote
 
@@ -24,6 +38,7 @@ def _git_parse_remote(remotes):
     raise err
 
 
+@set_options
 def git_remote_server(remotes):
     """Git remote server name
 
@@ -35,6 +50,7 @@ def git_remote_server(remotes):
     return _git_parse_remote(remotes)[0]
 
 
+@set_options
 def git_repository_name(remotes):
     """Git repository name
 
@@ -49,6 +65,7 @@ def git_repository_name(remotes):
     return f'{user}/{name}'
 
 
+@set_options
 def git_current_branch(branch_name):
     """Git current branch name
 
@@ -60,6 +77,7 @@ def git_current_branch(branch_name):
     return branch_name
 
 
+@set_options
 def git_status_icons(statuses):
     """Git status icons
 
@@ -74,6 +92,7 @@ def git_status_icons(statuses):
     return ''
 
 
+@set_options
 def cwd(working_dir):
     """Current working direcgtory
 
@@ -88,6 +107,7 @@ def cwd(working_dir):
     return working_dir
 
 
+@set_options
 def project_python(yes):
     if yes:
         return 'py'

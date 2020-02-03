@@ -16,6 +16,8 @@ PY_TMUX_PANE_FORMAT_GIT = (
     '{project_python}'
 )
 
+PY_TMUX_PANE_OPTIONS__CWD = 'fg=blue'
+
 
 def main():
     from argparse import ArgumentParser

@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from . import format
-from . import git
-from . import directory
+from . import directory, format, git
 
 
 class LazyString:
