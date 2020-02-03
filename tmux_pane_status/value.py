@@ -10,9 +10,8 @@ class LazyString:
         self.cache = None
 
     def __str__(self):
-        if self.cache:
-            return self.cache
-        self.cache = str(self.func())
+        if self.cache is None:
+            self.cache = str(self.func())
         return self.cache
 
 
