@@ -12,7 +12,7 @@ def set_options(func):
         s = func(*args, **kwargs)
         if options is None:
             return s
-        opt = ''.join([f'#[{k}={v}]' for k, v in options.items()])
+        opt = ''.join([f'#[{k}={v}]' for k, v in options])
         end = '#[none]'
         return f'{opt}{s}{end}'
     return _wrapper
