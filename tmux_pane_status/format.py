@@ -10,7 +10,7 @@ def set_options(func):
     @wraps(func)
     def _wrapper(*args, options=None, **kwargs):
         s = func(*args, **kwargs)
-        if options is None:
+        if not options:
             return s
         opt = ''.join([f'#[{k}={v}]' for k, v in options])
         end = '#[none]'

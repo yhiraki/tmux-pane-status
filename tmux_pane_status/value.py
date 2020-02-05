@@ -18,8 +18,6 @@ class LazyString:
 
 def make_values(*, cwd, options):
     def f(fmt, c, opt=None):
-        if opt is None:
-            opt = {}
         return fmt(c(), options=opt)
     m = (
         ('git_remote_server', git.remote),
