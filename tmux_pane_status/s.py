@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
 import sys
 from pathlib import Path
 
@@ -56,6 +57,8 @@ def cli():
     parser.add_argument('cwd', type=Path)
     parser.add_argument('pid', type=int)
     args = parser.parse_args()
+
+    os.chdir(str(args.cwd))
     main(args.cwd.resolve(), args.pid)
 
 
