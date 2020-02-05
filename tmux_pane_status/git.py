@@ -5,11 +5,15 @@ from typing import Tuple
 import subprocess
 
 
+GIT = '/usr/bin/git'
+
+
 def git(command: str, *options: Tuple[str]):
-    r = subprocess.run(['git', command] + list(options), capture_output=True)
+    r = subprocess.run([GIT, command] + list(options), capture_output=True)
     for line in r.stdout.decode().split('\n'):
-        if line:
-            yield line.strip()
+        sl = line.strip()
+        if sl:
+            yield sl
 
 
 def remote():

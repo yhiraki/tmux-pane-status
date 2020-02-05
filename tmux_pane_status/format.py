@@ -87,8 +87,9 @@ def git_status_icons(statuses):
         str
     """
     v = set(''.join([s[0] for s in statuses]))
+    v = ''.join(sorted(v))
     if v:
-        return f"[{''.join(v)}]"
+        return f"[{v}]"
     return ''
 
 
