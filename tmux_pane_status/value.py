@@ -19,19 +19,21 @@ class LazyString:
 
 
 def make_values(*, cwd, options, icons):
-    def f(formatter, cmd, options=None, icons=None):
-        return formatter().format(cmd(), options, icons)
+    def f(formatter, cmds, options=None, icons=None):
+        res = [cmd() for cmd in cmds]
+        return formatter().format(*res, options=options, icons=icons)
 
     m = (
-        ('git_remote_server', fmt.GitRemoteServer, git.remote),
-        ('git_repository_name', fmt.GitRepositoryName, git.remote),
-        ('git_current_branch', fmt.GitCurrentBranch, git.branch_current),
-        ('git_status_icons', fmt.GitStatusIcons, git.status),
-        ('cwd', fmt.Cwd, partial(str, cwd)),
-        ('project_python', fmt.ProjectPython, partial(str, cwd)),
+        ('git_remote_server', fmt.GitRemoteServer, (git.remote, )),
+        ('git_repository_name', fmt.GitRepositoryName, (git.remote,)),
+        ('git_current_branch', fmt.GitCurrentBranch, (git.branch_current,)),
+        ('git_status_icons', fmt.GitStatusIcons, (git.status,)),
+        ('git_cwd', fmt.GitCwd, (git.remote, partial(str, cwd))),
+        ('cwd', fmt.Cwd, (partial(str, cwd),)),
+        ('project_python', fmt.ProjectPython, (partial(str, cwd), )),
     )
     v = {}
-    for name, formatter, cmd in m:
+    for name, formatter, cmds in m:
         v[name] = LazyString(
-            partial(f, formatter, cmd, options.get(name), icons))
+            partial(f, formatter, cmds, options.get(name), icons))
     return v

@@ -5,7 +5,7 @@
 PY_TMUX_PANE_FORMAT__DEFAULT = ' {cwd} '
 PY_TMUX_PANE_FORMAT__GIT = (
     ' {git_remote_server}'
-    ' {git_repository_name}'
+    ' {git_repository_name}{git_cwd}'
     ' {git_current_branch}'
     ' {git_status_icons}'
     ' {project_python}'

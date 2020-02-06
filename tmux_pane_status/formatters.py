@@ -33,8 +33,8 @@ def git_parse_status(s):
 
 
 class GitRemoteServer(Formatter):
-    def extract_data(self, s):
-        for r in git_parse_remote(s):
+    def extract_data(self, *ss):
+        for r in git_parse_remote(ss[0]):
             return r[1]
 
     def set_icons(self, s, icons):
@@ -46,8 +46,8 @@ class GitRemoteServer(Formatter):
 
 
 class GitRepositoryName(Formatter):
-    def extract_data(self, s):
-        for r in git_parse_remote(s):
+    def extract_data(self, *ss):
+        for r in git_parse_remote(ss[0]):
             user, name = r[2], r[3]
             if name.endswith('.git'):
                 name = name[:-4]
@@ -55,27 +55,39 @@ class GitRepositoryName(Formatter):
 
 
 class GitCurrentBranch(Formatter):
-    def extract_data(self, s):
-        return s.strip()
+    def extract_data(self, *ss):
+        return ss[0].strip()
 
 
 class GitStatusIcons(Formatter):
-    def extract_data(self, s):
-        v = set(''.join([s[0] for s in git_parse_status(s)]))
+    def extract_data(self, *ss):
+        v = set(''.join([s[0] for s in git_parse_status(ss[0])]))
         v = ''.join(sorted(v))
         if v:
             return f"[{v}]"
         return ''
 
 
+class GitCwd(Formatter):
+    def extract_data(self, *ss):
+        remote = ss[0]
+        cwd = ss[1]
+        for r in git_parse_remote(remote):
+            gitroot = f'{r[1]}/{r[2]}'
+            gcwd = cwd.split(gitroot)
+            if len(gcwd) < 2:
+                return ''
+            return gcwd[1]
+
+
 class Cwd(Formatter):
-    def extract_data(self, s):
-        return s
+    def extract_data(self, *ss):
+        return ss[0]
 
 
 class ProjectPython(Formatter):
-    def extract_data(self, s):
-        if directory.is_python(Path(s)):
+    def extract_data(self, *ss):
+        if directory.is_python(Path(ss[0])):
             return 'py'
         return ''
 
