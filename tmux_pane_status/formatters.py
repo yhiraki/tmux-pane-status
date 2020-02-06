@@ -37,6 +37,13 @@ class GitRemoteServer(Formatter):
         for r in git_parse_remote(s):
             return r[1]
 
+    def set_icons(self, s, icons):
+        if s == 'github.com':
+            return icons['github']
+        if s == 'bitbucket.org':
+            return icons['bitbucket']
+        return s
+
 
 class GitRepositoryName(Formatter):
     def extract_data(self, s):

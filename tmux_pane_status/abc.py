@@ -7,7 +7,7 @@ class Formatter:
     def set_options(self, s, options):
         if not options:
             return s
-        opt = ''.join([f'#[{k}={v}]' for k, v in options])
+        opt = ''.join([f'#[{i}]' for i in options])
         end = '#[none]'
         return f'{opt}{s}{end}'
 
