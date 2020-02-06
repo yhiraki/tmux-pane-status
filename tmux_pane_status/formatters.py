@@ -8,13 +8,6 @@ from pathlib import Path
 
 
 def git_parse_remote(s):
-    """Parse git remote
-
-    Args:
-        remotes: result of git.remote()
-    Returns:
-        (name, server, user, name, method) (Tuple[str]):
-    """
     for remote in s.split('\n'):
         if not remote.strip():
             continue
