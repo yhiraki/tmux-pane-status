@@ -21,6 +21,8 @@ PY_TMUX_PANE_OPTIONS__CWD = 'fg=blue'
 PY_TMUX_PANE_OPTIONS__GIT_REMOTE_SERVER = 'fg=blue'
 PY_TMUX_PANE_OPTIONS__GIT_REPOSITORY_NAME = 'fg=blue'
 
+PY_TMUX_PANE_ICON__PYTHON = '🐍'
+
 
 def parse_option(opt):
     v = opt.split('=')
@@ -33,6 +35,12 @@ options = {
     if name.startswith('PY_TMUX_PANE_OPTIONS__')
 }
 
+icons = {
+    name.replace('PY_TMUX_PANE_ICON__', '').lower(): value
+    for name, value in locals().items()
+    if name.startswith('PY_TMUX_PANE_ICON__')
+}
+
 
 def main(cwd, pid):
     s = PY_TMUX_PANE_FORMAT_DEFAULT
@@ -40,7 +48,7 @@ def main(cwd, pid):
     if directory.is_git(cwd):
         s = PY_TMUX_PANE_FORMAT_GIT
 
-    v = make_values(cwd=cwd, options=options)
+    v = make_values(cwd=cwd, options=options, icons=icons)
 
     # 15% faster
     # from concurrent.futures import ThreadPoolExecutor

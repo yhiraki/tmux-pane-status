@@ -71,3 +71,8 @@ class ProjectPython(Formatter):
         if directory.is_python(Path(s)):
             return 'py'
         return ''
+
+    def set_icons(self, s, icons):
+        if s:
+            return icons['python']
+        return s
