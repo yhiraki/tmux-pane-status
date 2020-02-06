@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from functools import partial
-from . import directory, format, git
+
+from . import formatters as fmt
+from . import git
 
 
 class LazyString:
@@ -16,19 +18,20 @@ class LazyString:
         return self.cache
 
 
-def make_values(*, cwd, options):
-    def f(fmt, c, opt=None):
-        return fmt(c(), options=opt)
+def make_values(*, cwd, options, icons):
+    def f(formatter, cmd, options=None, icons=None):
+        return formatter().format(cmd(), options, icons)
+
     m = (
-        ('git_remote_server', git.remote),
-        ('git_repository_name', git.remote),
-        ('git_current_branch', git.branch_current),
-        ('git_status_icons', git.status),
-        ('cwd', partial(str, cwd)),
-        ('project_python', partial(directory.is_python, cwd)),
+        ('git_remote_server', fmt.GitRemoteServer, git.remote),
+        ('git_repository_name', fmt.GitRepositoryName, git.remote),
+        ('git_current_branch', fmt.GitCurrentBranch, git.branch_current),
+        ('git_status_icons', fmt.GitStatusIcons, git.status),
+        ('cwd', fmt.Cwd, partial(str, cwd)),
+        ('project_python', fmt.ProjectPython, partial(str, cwd)),
     )
     v = {}
-    for name, cmd in m:
-        formatter = getattr(format, name)
-        v[name] = LazyString(partial(f, formatter, cmd, opt=options.get(name)))
+    for name, formatter, cmd in m:
+        v[name] = LazyString(
+            partial(f, formatter, cmd, options.get(name), icons))
     return v
