@@ -70,14 +70,12 @@ class GitStatusIcons(Formatter):
 
 class GitCwd(Formatter):
     def extract_data(self, *ss):
-        remote = ss[0]
-        cwd = ss[1]
-        for r in git_parse_remote(remote):
-            gitroot = f'{r[1]}/{r[2]}'
-            gcwd = cwd.split(gitroot)
-            if len(gcwd) < 2:
-                return ''
-            return gcwd[1]
+        gitroot = ss[0]
+        gcwd = ss[1].split(gitroot)
+        print(gitroot, gcwd)
+        if len(gcwd) < 2:
+            return ''
+        return gcwd[1]
 
 
 class Cwd(Formatter):

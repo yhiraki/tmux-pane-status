@@ -5,6 +5,7 @@ from functools import partial
 
 from . import formatters as fmt
 from . import git
+from . import directory
 
 
 class LazyString:
@@ -28,7 +29,7 @@ def make_values(*, cwd, options, icons):
         ('git_repository_name', fmt.GitRepositoryName, (git.remote,)),
         ('git_current_branch', fmt.GitCurrentBranch, (git.branch_current,)),
         ('git_status_icons', fmt.GitStatusIcons, (git.status,)),
-        ('git_cwd', fmt.GitCwd, (git.remote, partial(str, cwd))),
+        ('git_cwd', fmt.GitCwd, (partial(str, directory.git_root(cwd)), partial(str, cwd))),
         ('cwd', fmt.Cwd, (partial(str, cwd),)),
         ('project_python', fmt.ProjectPython, (partial(str, cwd), )),
     )
