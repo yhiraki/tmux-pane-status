@@ -65,7 +65,6 @@ class GitCwd(Formatter):
     def extract_data(self, *ss):
         gitroot = ss[0]
         gcwd = ss[1].split(gitroot)
-        print(gitroot, gcwd)
         if len(gcwd) < 2:
             return ''
         return gcwd[1]
