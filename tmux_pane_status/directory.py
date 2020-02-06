@@ -25,6 +25,12 @@ def git_root(path: Path):
 
 def is_python(path: Path):
     for p in _walk_up(path):
-        if ((p / '__init__.py').is_file() or (p / 'setup.py').is_file()):
+        if (
+            (p / '__init__.py').is_file() or
+            (p / 'setup.py').is_file() or
+            (p / 'setup.cfg').is_file() or
+            (p / 'pytest.ini').is_file() or
+            (p / 'manage.py').is_file()
+        ):
             return True
     return False
