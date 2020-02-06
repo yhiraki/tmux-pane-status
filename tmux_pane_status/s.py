@@ -8,43 +8,31 @@ from pathlib import Path
 from . import directory
 from .value import make_values
 
-PY_TMUX_PANE_FORMAT_DEFAULT = ' {cwd} '
-PY_TMUX_PANE_FORMAT_GIT = (
-    ' {git_remote_server}'
-    ' {git_repository_name}'
-    ' {git_current_branch}'
-    ' {git_status_icons}'
-    ' {project_python}'
-    ' '
-)
+from . import defaults
 
-PY_TMUX_PANE_OPTIONS__CWD = 'fg=blue'
-PY_TMUX_PANE_OPTIONS__GIT_REMOTE_SERVER = 'bold,fg=blue'
-PY_TMUX_PANE_OPTIONS__GIT_REPOSITORY_NAME = 'bold,fg=blue'
-PY_TMUX_PANE_OPTIONS__GIT_CURRENT_BRANCH = 'bold,fg=magenta'
-
-PY_TMUX_PANE_ICON__PYTHON = '🐍'
-PY_TMUX_PANE_ICON__GITHUB = '🐱'
-PY_TMUX_PANE_ICON__BITBUCKET = '🥛'
-
-options = {
-    name.replace('PY_TMUX_PANE_OPTIONS__', '').lower(): [opt.strip() for opt in value.split(',')]
-    for name, value in locals().items()
-    if name.startswith('PY_TMUX_PANE_OPTIONS__')
-}
-
-icons = {
-    name.replace('PY_TMUX_PANE_ICON__', '').lower(): value
-    for name, value in locals().items()
-    if name.startswith('PY_TMUX_PANE_ICON__')
-}
+formats = {}
+options = {}
+icons = {}
+for name, value in vars(defaults).items():
+    if os.environ.get(name):
+        value = os.environ.get(name)
+    if name.startswith('PY_TMUX_PANE_FORMAT__'):
+        formats[name.replace('PY_TMUX_PANE_FORMAT__', '').lower()] = value
+        continue
+    if name.startswith('PY_TMUX_PANE_OPTIONS__'):
+        options[name.replace('PY_TMUX_PANE_OPTIONS__', '').lower()] = [
+            opt.strip() for opt in value.split(',')]
+        continue
+    if name.startswith('PY_TMUX_PANE_ICON__'):
+        icons[name.replace('PY_TMUX_PANE_ICON__', '').lower()] = value
+        continue
 
 
 def main(cwd, pid):
-    s = PY_TMUX_PANE_FORMAT_DEFAULT
+    s = formats['default']
 
     if directory.is_git(cwd):
-        s = PY_TMUX_PANE_FORMAT_GIT
+        s = formats['git']
 
     v = make_values(cwd=cwd, options=options, icons=icons)
 
