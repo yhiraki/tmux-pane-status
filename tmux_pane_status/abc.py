@@ -8,7 +8,7 @@ class Formatter:
         if not options:
             return s
         opt = ''.join([f'#[{i}]' for i in options])
-        end = '#[none]'
+        end = '#[default]'
         return f'{opt}{s}{end}'
 
     def set_icons(self, s, icons):
