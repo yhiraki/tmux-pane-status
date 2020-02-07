@@ -102,7 +102,11 @@ class ProjectPython(Formatter):
 
 class CurrentCommand(Formatter):
     def extract_data(self, *ss):
-        return ss[0].split('\n')[1].strip()
+        cmd = ss[0].split('\n')[1].strip()
+        return ' '.join([
+            c.split('/')[-1]
+            for c in cmd.split()
+        ])
 
 
 class CurrentCommandElapsed(Formatter):
