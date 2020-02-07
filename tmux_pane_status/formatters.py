@@ -102,10 +102,27 @@ class ProjectPython(Formatter):
 
 class CurrentCommand(Formatter):
     def extract_data(self, *ss):
-        cmd = ss[0].split('\n')[1].strip()
+        cmd = ss[0].split('\n')[1].strip().split()
+
+        if cmd[0] == 'ssh':
+            i = 0
+            length = len(cmd)
+            _cmd = cmd[:]
+            cmd = []
+            while i < length:
+                if _cmd[i] == 'ssh':
+                    cmd.append('SSH ->')
+                elif _cmd[i] == '-p':
+                    i += 1
+                elif _cmd[i].startswith('-'):
+                    pass
+                else:
+                    cmd.append(_cmd[i])
+                i += 1
+
         return ' '.join([
             c.split('/')[-1]
-            for c in cmd.split()
+            for c in cmd
         ])
 
 
