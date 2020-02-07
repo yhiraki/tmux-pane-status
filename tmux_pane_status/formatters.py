@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from .abc import Formatter
 import re
-from . import directory
+from os import environ
 from pathlib import Path
+
+from . import directory
+from .abc import Formatter
 
 
 def git_parse_remote(s):
