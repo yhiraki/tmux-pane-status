@@ -51,6 +51,11 @@ class GitCurrentBranch(Formatter):
     def extract_data(self, *ss):
         return ss[0].strip()
 
+    def set_icons(self, s, icons):
+        if icons:
+            return f"{icons['branch']} {s}"
+        return s
+
 
 class GitStatusIcons(Formatter):
     def extract_data(self, *ss):
@@ -85,3 +90,13 @@ class ProjectPython(Formatter):
         if s:
             return icons['python']
         return s
+
+
+class CurrentCommand(Formatter):
+    def extract_data(self, *ss):
+        return ss[0].split('\n')[1].strip()
+
+
+class CurrentCommandElapsed(Formatter):
+    def extract_data(self, *ss):
+        return ss[0].split('\n')[1].strip()

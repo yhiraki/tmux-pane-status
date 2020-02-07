@@ -6,6 +6,7 @@ from functools import partial
 from . import formatters as fmt
 from . import git
 from . import directory
+from . import ps
 
 
 class LazyString:
@@ -19,7 +20,7 @@ class LazyString:
         return self.cache
 
 
-def make_values(*, cwd, options, icons):
+def make_values(*, cwd, child_pid, options, icons):
     def f(formatter, cmds, options=None, icons=None):
         res = [cmd() for cmd in cmds]
         return formatter().format(*res, options=options, icons=icons)
@@ -32,6 +33,9 @@ def make_values(*, cwd, options, icons):
         ('git_cwd', fmt.GitCwd, (partial(str, directory.git_root(cwd)), partial(str, cwd))),
         ('cwd', fmt.Cwd, (partial(str, cwd),)),
         ('project_python', fmt.ProjectPython, (partial(str, cwd), )),
+        ('current_command', fmt.CurrentCommand, (partial(ps.p, child_pid, ('command', )),)),
+        ('current_command_elapsed', fmt.CurrentCommandElapsed,
+         (partial(ps.p, child_pid, ('etime', )),)),
     )
     v = {}
     for name, formatter, cmds in m:

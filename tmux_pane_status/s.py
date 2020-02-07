@@ -5,6 +5,7 @@ import os
 import sys
 from pathlib import Path
 
+from . import pgrep
 from . import directory
 from .value import make_values
 
@@ -31,10 +32,17 @@ for name, value in vars(defaults).items():
 def main(cwd, pid):
     s = formats['default']
 
-    if directory.is_git(cwd):
+    pgrep_out = pgrep.p(pid).strip()
+    child_pid = 0
+
+    if pgrep_out:
+        child_pid = sorted(pgrep_out.split('\n'), reverse=True)[0]
+        s = formats['command']
+
+    elif directory.is_git(cwd):
         s = formats['git']
 
-    v = make_values(cwd=cwd, options=options, icons=icons)
+    v = make_values(cwd=cwd, child_pid=child_pid, options=options, icons=icons)
 
     # 15% faster
     # from concurrent.futures import ThreadPoolExecutor
