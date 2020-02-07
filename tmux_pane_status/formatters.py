@@ -87,6 +87,7 @@ class Cwd(Formatter):
             return s.replace('/private', '')
         return s
 
+
 class ProjectPython(Formatter):
     def extract_data(self, *ss):
         if directory.is_python(Path(ss[0])):
