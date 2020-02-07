@@ -79,8 +79,13 @@ class GitCwd(Formatter):
 
 class Cwd(Formatter):
     def extract_data(self, *ss):
-        return ss[0]
-
+        home = environ.get('HOME')
+        s = ss[0]
+        if s.startswith(home):
+            return s.replace(home, '~')
+        if s.startswith('/private'):
+            return s.replace('/private', '')
+        return s
 
 class ProjectPython(Formatter):
     def extract_data(self, *ss):
