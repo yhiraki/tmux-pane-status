@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+PY_TMUX_PANE_OVERRIDE_DEFAULTS = False
 
 PY_TMUX_PANE_FORMAT__DEFAULT = ' {cwd} '
 PY_TMUX_PANE_FORMAT__COMMAND = ' {current_command_elapsed} {current_command} '

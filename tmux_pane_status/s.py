@@ -14,13 +14,21 @@ from . import defaults
 formats = {}
 options = {}
 icons = {}
+override = False
+if os.environ.get('PY_TMUX_PANE_OVERRIDE_DEFAULTS'):
+    override = True
 for name, value in vars(defaults).items():
+    if override:
+        value = ''
     if os.environ.get(name):
         value = os.environ.get(name)
     if name.startswith('PY_TMUX_PANE_FORMAT__'):
         formats[name.replace('PY_TMUX_PANE_FORMAT__', '').lower()] = value
         continue
     if name.startswith('PY_TMUX_PANE_OPTIONS__'):
+        if not value:
+            options[name.replace('PY_TMUX_PANE_OPTIONS__', '').lower()] = []
+            continue
         options[name.replace('PY_TMUX_PANE_OPTIONS__', '').lower()] = [
             opt.strip() for opt in value.split(',')]
         continue
