@@ -9,7 +9,9 @@ GIT = '/usr/bin/git'
 
 
 def git(command: str, *options: Tuple[str]):
-    r = subprocess.run([GIT, command] + list(options), capture_output=True)
+    r = subprocess.run([GIT, command] + list(options),
+                       stdout=subprocess.PIPE,
+                       stderr=subprocess.PIPE)
     return r.stdout.decode()
 
 

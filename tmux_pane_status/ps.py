@@ -8,7 +8,9 @@ PS = '/bin/ps'
 
 
 def ps(*options: Tuple[str]):
-    r = subprocess.run([PS] + list(options), capture_output=True)
+    r = subprocess.run([PS] + list(options),
+                       stdout=subprocess.PIPE,
+                       stderr=subprocess.PIPE)
     return r.stdout.decode()
 
 

@@ -8,7 +8,9 @@ PGREP = '/usr/bin/pgrep'
 
 
 def pgrep(*options: Tuple[str]):
-    r = subprocess.run([PGREP] + list(options), capture_output=True)
+    r = subprocess.run([PGREP] + list(options),
+                       stdout=subprocess.PIPE,
+                       stderr=subprocess.PIPE)
     return r.stdout.decode()
 
 
