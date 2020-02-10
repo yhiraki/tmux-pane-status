@@ -16,7 +16,3 @@ def pgrep(*options: Tuple[str]):
 
 def p(pid):
     return pgrep('-P', str(pid))
-
-
-if __name__ == '__main__':
-    print(p(52250))
