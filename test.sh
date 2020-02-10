@@ -55,7 +55,7 @@ assert ' bb yhiraki/tmux-pane-status  master  '
 sleep 2 &
 
 echo command
-assert ' 00:00 sleep 2 '
+assert ' 00:00 sleep 2 ' || assert ' 00:01 sleep 2 '
 
 cd /tmp
 rm -rf $REPODIR
