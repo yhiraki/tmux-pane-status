@@ -40,9 +40,11 @@ for name, value in vars(defaults).items():
 def main(cwd, pid):
     s = formats['default']
 
-    pgrep_out = sorted(pgrep.p(pid).strip().split('\n'), reverse=True)
-    if pgrep_out[0] == str(os.getpid()):
-        pgrep_out = pgrep_out[1:]
+    pgrep_out = pgrep.p(pid).strip() or []
+    if pgrep_out:
+        pgrep_out = sorted(pgrep_out.split('\n'), reverse=True)
+        if pgrep_out[0] == str(os.getpid()):
+            pgrep_out = pgrep_out[1:]
     child_pid = 0
 
     if pgrep_out:
