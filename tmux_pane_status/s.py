@@ -40,11 +40,13 @@ for name, value in vars(defaults).items():
 def main(cwd, pid):
     s = formats['default']
 
-    pgrep_out = pgrep.p(pid).strip()
+    pgrep_out = sorted(pgrep.p(pid).strip().split('\n'), reverse=True)
+    if pgrep_out[0] == str(os.getpid()):
+        pgrep_out = pgrep_out[1:]
     child_pid = 0
 
     if pgrep_out:
-        child_pid = sorted(pgrep_out.split('\n'), reverse=True)[0]
+        child_pid = pgrep_out[0]
         s = formats['command']
 
     elif directory.is_git(cwd):
