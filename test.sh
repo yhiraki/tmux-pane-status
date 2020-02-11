@@ -37,7 +37,7 @@ rm -rf $REPODIR
 mkdir -p $REPODIR
 cd $REPODIR
 
-echo pwd
+echo cwd
 assert ' /tmp/.tmux-pane-status/repo '
 
 git init > /dev/null
