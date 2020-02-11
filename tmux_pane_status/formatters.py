@@ -102,7 +102,11 @@ class ProjectPython(Formatter):
 
 class CurrentCommand(Formatter):
     def extract_data(self, *ss):
-        cmd = ss[0].split('\n')[1].strip().split()
+        ps = ss[0].split('\n')
+        if len(ps) < 2:
+            return ''
+
+        cmd = ps[1].strip().split()
 
         if cmd[0] == 'ssh':
             i = 0
@@ -128,4 +132,7 @@ class CurrentCommand(Formatter):
 
 class CurrentCommandElapsed(Formatter):
     def extract_data(self, *ss):
-        return ss[0].split('\n')[1].strip()
+        ps = ss[0].split('\n')
+        if len(ps) < 2:
+            return ''
+        return ps[1].strip()
