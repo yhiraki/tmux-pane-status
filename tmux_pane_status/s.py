@@ -5,7 +5,7 @@ import os
 import sys
 from pathlib import Path
 
-from . import pgrep
+from .shell import pgrep
 from . import directory
 from .value import make_values
 
@@ -40,7 +40,7 @@ for name, value in vars(defaults).items():
 def main(cwd, pid):
     s = formats['default']
 
-    pgrep_out = pgrep.p(pid).strip() or []
+    pgrep_out = pgrep.P(pid).strip() or []
     if pgrep_out:
         pgrep_out = sorted(pgrep_out.split('\n'), reverse=True)
         if pgrep_out[0] == str(os.getpid()):

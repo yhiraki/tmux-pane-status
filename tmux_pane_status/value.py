@@ -4,9 +4,8 @@
 from functools import partial
 
 from . import formatters as fmt
-from . import git
+from .shell import git, ps
 from . import directory
-from . import ps
 
 
 class LazyString:
