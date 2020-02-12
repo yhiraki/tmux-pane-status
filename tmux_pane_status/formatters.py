@@ -28,11 +28,11 @@ def git_parse_status(s):
 
 
 class GitRemoteServer(Formatter):
-    def extract_data(self, *ss):
+    def _extract_data(self, *ss):
         for r in git_parse_remote(ss[0]):
             return r[1]
 
-    def set_icons(self, s, icons):
+    def _set_icons(self, s, icons):
         if s == 'github.com':
             return icons['github']
         if s == 'bitbucket.org':
@@ -41,7 +41,7 @@ class GitRemoteServer(Formatter):
 
 
 class GitRepositoryName(Formatter):
-    def extract_data(self, *ss):
+    def _extract_data(self, *ss):
         for r in git_parse_remote(ss[0]):
             user, name = r[2], r[3]
             if name.endswith('.git'):
@@ -50,17 +50,17 @@ class GitRepositoryName(Formatter):
 
 
 class GitCurrentBranch(Formatter):
-    def extract_data(self, *ss):
+    def _extract_data(self, *ss):
         return ss[0].strip()
 
-    def set_icons(self, s, icons):
+    def _set_icons(self, s, icons):
         if icons:
             return f"{icons['branch']} {s}"
         return s
 
 
 class GitStatusIcons(Formatter):
-    def extract_data(self, *ss):
+    def _extract_data(self, *ss):
         v = set(''.join([s[0] for s in git_parse_status(ss[0])]))
         v = ''.join(sorted(v))
         if v:
@@ -69,7 +69,7 @@ class GitStatusIcons(Formatter):
 
 
 class GitCwd(Formatter):
-    def extract_data(self, *ss):
+    def _extract_data(self, *ss):
         gitroot = ss[0]
         gcwd = ss[1].split(gitroot)
         if len(gcwd) < 2:
@@ -78,7 +78,7 @@ class GitCwd(Formatter):
 
 
 class Cwd(Formatter):
-    def extract_data(self, *ss):
+    def _extract_data(self, *ss):
         home = environ.get('HOME')
         s = ss[0]
         if s.startswith(home):
@@ -89,19 +89,19 @@ class Cwd(Formatter):
 
 
 class ProjectPython(Formatter):
-    def extract_data(self, *ss):
+    def _extract_data(self, *ss):
         if directory.is_python(Path(ss[0])):
             return 'py'
         return ''
 
-    def set_icons(self, s, icons):
+    def _set_icons(self, s, icons):
         if s:
             return icons['python']
         return s
 
 
 class CurrentCommand(Formatter):
-    def extract_data(self, *ss):
+    def _extract_data(self, *ss):
         ps = ss[0].split('\n')
         if len(ps) < 2:
             return ''
@@ -131,7 +131,7 @@ class CurrentCommand(Formatter):
 
 
 class CurrentCommandElapsed(Formatter):
-    def extract_data(self, *ss):
+    def _extract_data(self, *ss):
         ps = ss[0].split('\n')
         if len(ps) < 2:
             return ''
