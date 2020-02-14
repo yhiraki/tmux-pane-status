@@ -5,7 +5,7 @@ import os
 import sys
 from pathlib import Path
 
-from .shell import pgrep
+from .shell import pgrep, ps
 from . import directory
 from .value import make_values
 
@@ -49,7 +49,8 @@ def main(cwd, pid):
 
     if pgrep_out:
         child_pid = pgrep_out[0]
-        s = formats['command']
+        if not ps.p(child_pid, ('command', )).split('\n')[1].strip().endswith('zsh'):
+            s = formats['command']
 
     elif directory.is_git(cwd):
         s = formats['git']
