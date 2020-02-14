@@ -3,4 +3,4 @@
 
 __version__ = '0.0.7'
 
-from .s import cli  # noqa
+from .main import cli  # noqa
