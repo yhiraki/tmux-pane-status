@@ -26,11 +26,7 @@ for name, value in vars(defaults).items():
         formats[name.replace('PY_TMUX_PANE_FORMAT__', '').lower()] = value
         continue
     if name.startswith('PY_TMUX_PANE_OPTIONS__'):
-        if not value:
-            options[name.replace('PY_TMUX_PANE_OPTIONS__', '').lower()] = []
-            continue
-        options[name.replace('PY_TMUX_PANE_OPTIONS__', '').lower()] = [
-            opt.strip() for opt in value.split(',')]
+        options[name.replace('PY_TMUX_PANE_OPTIONS__', '').lower()] = value
         continue
     if name.startswith('PY_TMUX_PANE_ICON__'):
         icons[name.replace('PY_TMUX_PANE_ICON__', '').lower()] = value

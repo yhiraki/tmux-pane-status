@@ -5,11 +5,12 @@
 class Formatter:
     cache_enabled = False
 
-    def _set_options(self, s, options, cache=None):
-        if not options:
+    def _set_options(self, s: str, options: str, cache=None):
+        opts = [o.strip() for o in options.split(',')]
+        if not opts:
             return s
         self.cache = cache
-        opt = ''.join([f'#[{i}]' for i in options])
+        opt = ''.join([f'#[{i}]' for i in opts])
         end = '#[default]'
         return f'{opt}{s}{end}'
 
