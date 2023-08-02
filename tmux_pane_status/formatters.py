@@ -14,9 +14,13 @@ def git_parse_remote(s):
         if not remote.strip():
             continue
         r = remote.split()
-        url = r[1].split('@')[1]
-        m = re.match(r'(.*)[:/](.*)/(.*)', url)
-        yield (r[0], *m.groups(), r[2])
+        if '@' in r[1]:
+            url = r[1].split('@')[1]
+            m = re.match(r'(.*)[:/](.*)/(.*)', url)
+            yield (r[0], *m.groups(), r[2])
+        if r[1].startswith('https://'):
+            m = re.match(r'https://(.*)/(.*)/(.*)', r[1])
+            yield (r[0], *m.groups(), r[2])
 
 
 def git_parse_status(s):

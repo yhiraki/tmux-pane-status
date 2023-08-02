@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import unittest
@@ -13,10 +12,25 @@ class TestFormatter(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_git_parse_remote(self):
+    def test_git_parse_remote_ssh(self):
         s = '''\
 origin  git@github.com:yhiraki/tmux-pane-status.git (fetch)
 origin  git@github.com:yhiraki/tmux-pane-status.git (push)
+'''
+        gen = formatters.git_parse_remote(s)
+        res = next(gen)
+        self.assertEqual(res, ('origin', 'github.com', 'yhiraki',
+                               'tmux-pane-status.git', '(fetch)'))
+        res = next(gen)
+        self.assertEqual(res, ('origin', 'github.com', 'yhiraki',
+                               'tmux-pane-status.git', '(push)'))
+        with self.assertRaises(StopIteration):
+            res = next(gen)
+
+    def test_git_parse_remote_https(self):
+        s = '''\
+origin  https://github.com/yhiraki/tmux-pane-status.git (fetch)
+origin  https://github.com/yhiraki/tmux-pane-status.git (push)
 '''
         gen = formatters.git_parse_remote(s)
         res = next(gen)
