@@ -23,6 +23,16 @@ def git_parse_remote(s):
             yield (r[0], *m.groups(), r[2])
 
 
+def git_get_remote(s, preferred='origin'):
+    first = None
+    for r in git_parse_remote(s):
+        if first is None:
+            first = r
+        if r[0] == preferred:
+            return r
+    return first
+
+
 def git_parse_status(s):
     for status in s.split('\n'):
         status = status.strip()
@@ -33,7 +43,8 @@ def git_parse_status(s):
 
 class GitRemoteServer(Formatter):
     def _extract_data(self, *ss):
-        for r in git_parse_remote(ss[0]):
+        r = git_get_remote(ss[0])
+        if r:
             return r[1]
 
     def _set_icons(self, s, icons):
@@ -46,7 +57,8 @@ class GitRemoteServer(Formatter):
 
 class GitRepositoryName(Formatter):
     def _extract_data(self, *ss):
-        for r in git_parse_remote(ss[0]):
+        r = git_get_remote(ss[0])
+        if r:
             user, name = r[2], r[3]
             if name.endswith('.git'):
                 name = name[:-4]
