@@ -40,7 +40,7 @@ cd $REPODIR
 echo cwd
 assert ' /tmp/.tmux-pane-status/repo '
 
-git init > /dev/null
+git init -b master > /dev/null
 git remote add origin git@github.com:yhiraki/tmux-pane-status
 :> README
 git add README
