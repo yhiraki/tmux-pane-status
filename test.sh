@@ -1,67 +1,61 @@
 #!/bin/bash
-
 set -e
 
-git config --global user.email "email"
-git config --global user.name "name"
+BINARY=$(realpath "${1:-tmux-pane-status}")
 
-export PY_TMUX_PANE_FORMAT__DEFAULT=' {cwd} '
-export PY_TMUX_PANE_FORMAT__COMMAND=' {current_command_elapsed} {current_command} '
-export PY_TMUX_PANE_FORMAT__GIT=' {git_remote_server} {git_repository_name}{git_cwd} {git_current_branch} {git_status_icons} {project_python}'
- 
-export PY_TMUX_PANE_ICON__BITBUCKET='bb'
-export PY_TMUX_PANE_ICON__BRANCH=''
-export PY_TMUX_PANE_ICON__BRANCH=''
-export PY_TMUX_PANE_ICON__GITHUB='gh'
-export PY_TMUX_PANE_ICON__PYTHON='py'
-export PY_TMUX_PANE_OPTIONS__CURRENT_COMMAND=''
-export PY_TMUX_PANE_OPTIONS__CURRENT_COMMAND_ELAPSED=''
-export PY_TMUX_PANE_OPTIONS__CWD=''
-export PY_TMUX_PANE_OPTIONS__GIT_CURRENT_BRANCH=''
-export PY_TMUX_PANE_OPTIONS__GIT_CWD=''
-export PY_TMUX_PANE_OPTIONS__GIT_REMOTE_SERVER=''
-export PY_TMUX_PANE_OPTIONS__GIT_REPOSITORY_NAME=''
-export PY_TMUX_PANE_OPTIONS__GIT_STATUS_ICONS=''
-export PY_TMUX_PANE_OPTIONS__PROJECT_PYTHON=''
-export PY_TMUX_PANE_OVERRIDE_DEFAULTS=1
-
-function assert () {
-  local res=$(tmux-pane-status $(pwd) $$)
-  diff <(echo -n "$res") <(echo -n "$1")
+assert() {
+  local got
+  got=$(PANE_STATUS_NO_DEFAULTS=1 \
+    PANE_STATUS_FORMAT_DEFAULT=' {cwd} ' \
+    PANE_STATUS_FORMAT_GIT=' {git_remote_server} {git_repository_name}{git_cwd} {git_current_branch} {git_status_icons} {project_python}' \
+    PANE_STATUS_FORMAT_COMMAND=' {current_command_elapsed} {current_command}' \
+    PANE_STATUS_ICON_GITHUB='gh' \
+    PANE_STATUS_ICON_BITBUCKET='bb' \
+    PANE_STATUS_ICON_PYTHON='py' \
+    PANE_STATUS_ICON_BRANCH='' \
+    "$BINARY" "$(pwd)" $$)
+  if ! diff <(printf '%s' "$got") <(printf '%s' "$1"); then
+    echo "FAIL: expected '$1', got '$got'" >&2
+    exit 1
+  fi
 }
 
-cd /tmp
+REPODIR=$(mktemp -d /tmp/tmux-pane-status-test-XXXX)
+trap 'rm -rf "$REPODIR"' EXIT
 
-REPODIR=.tmux-pane-status/repo
-rm -rf $REPODIR
-mkdir -p $REPODIR
-cd $REPODIR
+cd "$REPODIR"
 
-echo cwd
-assert ' /tmp/.tmux-pane-status/repo '
+echo "==> plain cwd"
+assert " $REPODIR "
 
-git init -b master > /dev/null
+git -c user.email=t@t.com -c user.name=t init -b master > /dev/null
 git remote add origin git@github.com:yhiraki/tmux-pane-status
-:> README
-git add README
-git commit -m 'first' > /dev/null
+: > README
+git -c user.email=t@t.com -c user.name=t add README
+git -c user.email=t@t.com -c user.name=t commit -m first > /dev/null
 
-echo github
-assert ' gh yhiraki/tmux-pane-status  master  '
+echo "==> github remote"
+assert " gh yhiraki/tmux-pane-status master  "
 
 git remote remove origin
 git remote add origin git@bitbucket.org:yhiraki/tmux-pane-status
 
-echo bitbucket
-assert ' bb yhiraki/tmux-pane-status  master  '
+echo "==> bitbucket remote"
+assert " bb yhiraki/tmux-pane-status master  "
 
+echo "==> command suffix"
 sleep 2 &
+SLEEP_PID=$!
+got=$(PANE_STATUS_NO_DEFAULTS=1 \
+  PANE_STATUS_FORMAT_DEFAULT=' {cwd} ' \
+  PANE_STATUS_FORMAT_GIT=' {git_remote_server}{git_current_branch}' \
+  PANE_STATUS_FORMAT_COMMAND=' {current_command_elapsed} {current_command}' \
+  PANE_STATUS_ICON_GITHUB='gh' PANE_STATUS_ICON_BRANCH='' \
+  "$BINARY" "$(pwd)" $$)
+kill "$SLEEP_PID" 2>/dev/null || true
+if [[ "$got" != *"sleep"* ]]; then
+  echo "FAIL: expected 'sleep' in command output, got '$got'" >&2
+  exit 1
+fi
 
-echo command
-assert ' 00:00 sleep 2 ' || assert ' 00:01 sleep 2 '
-
-cd /tmp
-rm -rf $REPODIR
-
-echo ---
-echo ok
+echo "==> all ok"

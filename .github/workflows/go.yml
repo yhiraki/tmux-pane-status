@@ -1,0 +1,35 @@
+name: Go
+
+on:
+  push:
+    paths-ignore:
+      - '*.md'
+      - '.gitignore'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        go-version: ['1.22', '1.23', '1.24']
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go ${{ matrix.go-version }}
+      uses: actions/setup-go@v5
+      with:
+        go-version: ${{ matrix.go-version }}
+
+    - name: Vet
+      run: go vet ./...
+
+    - name: Test
+      run: go test ./...
+
+    - name: Build
+      run: go build -o tmux-pane-status ./cmd/tmux-pane-status/
+
+    - name: Integration test
+      run: bash test.sh ./tmux-pane-status

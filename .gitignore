@@ -1,3 +1,6 @@
+# Go build artifacts
+/tmux-pane-status
+
 ### https://raw.github.com/github/gitignore/f9291de89f5f7dc0d3d87f9eb111b839f81d5dbc/Python.gitignore
 
 # Byte-compiled / optimized / DLL files
@@ -134,7 +137,7 @@ dmypy.json
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
 
 # Thumbnails
 ._*
