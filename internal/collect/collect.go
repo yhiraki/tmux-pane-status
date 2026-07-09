@@ -81,9 +81,11 @@ func (c *Collector) GitRemote() string {
 	return c.cached("git_remote", func() string { return c.run("git", "remote", "-v") })
 }
 
-// GitStatus returns `git status -s`.
+// GitStatus returns `git status -s`. --no-optional-locks keeps status read-only
+// (it does not write back the refreshed index), so this frequent per-pane poll
+// never takes .git/index.lock and cannot collide with a concurrent commit/add.
 func (c *Collector) GitStatus() string {
-	return c.cached("git_status", func() string { return c.run("git", "status", "-s") })
+	return c.cached("git_status", func() string { return c.run("git", "--no-optional-locks", "status", "-s") })
 }
 
 // GitBranch returns the current branch name.

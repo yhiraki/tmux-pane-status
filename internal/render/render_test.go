@@ -41,7 +41,7 @@ func TestRenderGit(t *testing.T) {
 	col := mockCollector(map[string]string{
 		"git remote -v":                   "origin\tgit@github.com:user/repo.git (fetch)\n",
 		"git rev-parse --abbrev-ref HEAD": "main\n",
-		"git status -s":                   " M foo.go\n",
+		"git --no-optional-locks status -s": " M foo.go\n",
 	})
 	pane := Pane{Cwd: "/repo", Home: "/home/user", GitRoot: "/repo"}
 	out := Render(pane, col, defaultCfg)
